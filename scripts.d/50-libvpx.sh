@@ -4,6 +4,7 @@ SCRIPT_REPO="https://chromium.googlesource.com/webm/libvpx"
 SCRIPT_COMMIT="2edd69749fddcb79af38b132aa565a7f99623be4"
 
 ffbuild_enabled() {
+    [[ $ADDINS_STR == *-rk ]] && return -1
     return 0
 }
 
