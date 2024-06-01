@@ -4,6 +4,7 @@ SCRIPT_REPO="https://chromium.googlesource.com/webm/libvpx"
 SCRIPT_COMMIT="25540b3c127f522aae382c79872d9ee03f7307f3"
 
 ffbuild_enabled() {
+    [[ $ADDINS_STR == *-rk ]] && return -1
     [[ $TARGET == winarm64 ]] && return -1
     return 0
 }

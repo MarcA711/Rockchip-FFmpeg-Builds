@@ -1,35 +1,13 @@
-name: Test Full Build
-on:
-  pull_request:
-    branches:
-      - master
-    paths-ignore:
-      - '**.md'
-      - 'LICENSE'
+name: Build Rockchip-FFmpeg
+on: workflow_dispatch
 
 env:
   DOCKER_BUILDKIT: 1
 
 jobs:
   build:
-    name: Test Full Build
+    name: Build Rockchip-FFmpeg
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [win64,linux64,linuxarm64]
-        variant: [lgpl,gpl 6.1,gpl 5.1,lgpl 6.1,lgpl 5.1,gpl-shared,lgpl-shared,gpl-shared 6.1,gpl-shared 5.1,lgpl-shared 6.1,lgpl-shared 5.1]
-        quickbuild: [1]
-        include:
-          - target: win64
-            variant: gpl
-            quickbuild: ''
-          - target: linux64
-            variant: gpl
-            quickbuild: ''
-          - target: linuxarm64
-            variant: gpl
-            quickbuild: ''
     steps:
       - name: Free Disk-Space
         run: df -h && sudo apt-get clean && docker system prune -a -f && sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc && df -h
@@ -52,19 +30,12 @@ jobs:
           restore-keys: |
             download-cache-
       - name: Build Image
-        run: ./makeimage.sh ${{ matrix.target }} ${{ matrix.variant }}
-        env:
-          QUICKBUILD: ${{ matrix.quickbuild }}
+        run: ./makeimage.sh linuxarm64 gpl 6.1-rk
       - name: Build ffmpeg
-        run: ./build.sh ${{ matrix.target }} ${{ matrix.variant }}
-      - name: Replace spaces in string
-        id: strs
-        run: |
-          SLUG="${{ matrix.target }}-${{ matrix.variant }}"
-          echo "artifact_slug=${SLUG// /-}" >> $GITHUB_OUTPUT
+        run: ./build.sh linuxarm64 gpl 6.1-rk
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ffmpeg-${{ steps.strs.outputs.artifact_slug }}
+          name: ffmpeg-linuxarm64-gpl-6.1-rk
           overwrite: true
           path: artifacts/*
