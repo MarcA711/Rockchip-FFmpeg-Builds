@@ -52,7 +52,7 @@ fi
 ./generate.sh "$TARGET" "$VARIANT" "${ADDINS[@]}"
 
 docker buildx --builder ffbuilder build \
-    # --cache-from=type=local,src=.cache/"${IMAGE/:/_}" \
+    --cache-from=type=local,src=.cache/"${IMAGE/:/_}" \
     --cache-to=type=local,mode=max,dest=.cache/"${IMAGE/:/_}" \
     --build-context "${TARGET_IMAGE}=${CONTEXT_SRC}" \
     --load --tag "$IMAGE" .
